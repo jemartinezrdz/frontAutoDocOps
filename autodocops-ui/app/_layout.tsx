@@ -10,6 +10,7 @@ export default function RootLayout() {
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="projects" options={{ title: 'Projects' }} />
+          <Stack.Screen name="erd" options={{ title: 'Diagrama ER', headerShown: true }} />
         </Stack>
       </Providers>
     </ErrorBoundary>
