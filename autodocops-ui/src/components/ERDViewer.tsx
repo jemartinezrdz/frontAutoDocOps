@@ -129,21 +129,58 @@ export function ERDViewer({ erdUrl: _erdUrl, projectId: _projectId }: ERDViewerP
 
   const renderERDContent = () => {
     // In a real app, this would render the actual SVG from erdUrl
-    // For now, we'll show a mock ERD diagram
+    // For now, we'll show a visual mockup that represents the structure
     return (
       <View style={styles.erdContainer}>
         <Text style={styles.erdTitle}>Entity Relationship Diagram</Text>
-        <View style={styles.mockERD}>
-          <Text style={styles.mockText}>
-            {mockERDContent.replace(/<[^>]*>/g, '').trim().substring(0, 200)}...
-          </Text>
-          <Text style={styles.mockNote}>
-            📊 Diagrama ER interactivo{'\n'}
-            🔍 Usa pinch para hacer zoom{'\n'}
-            👆 Arrastra para navegar{'\n'}
-            🔄 Toca "Reset" para volver al inicio
-          </Text>
+        
+        {/* Mockup visual representation */}
+        <View style={styles.diagramContainer}>
+          {/* User Entity */}
+          <View style={[styles.entityBox, { backgroundColor: '#007AFF' }]}>
+            <Text style={styles.entityTitle}>User</Text>
+            <Text style={styles.entityField}>• id (PK)</Text>
+            <Text style={styles.entityField}>• email</Text>
+            <Text style={styles.entityField}>• name</Text>
+            <Text style={styles.entityField}>• created_at</Text>
+          </View>
+
+          {/* Project Entity */}
+          <View style={[styles.entityBox, { backgroundColor: '#28a745' }]}>
+            <Text style={styles.entityTitle}>Project</Text>
+            <Text style={styles.entityField}>• id (PK)</Text>
+            <Text style={styles.entityField}>• name</Text>
+            <Text style={styles.entityField}>• description</Text>
+            <Text style={styles.entityField}>• repository_url</Text>
+            <Text style={styles.entityField}>• user_id (FK)</Text>
+          </View>
+
+          {/* Documentation Entity */}
+          <View style={[styles.entityBox, { backgroundColor: '#ffc107' }]}>
+            <Text style={[styles.entityTitle, { color: '#1a1a1a' }]}>Documentation</Text>
+            <Text style={[styles.entityField, { color: '#1a1a1a' }]}>• id (PK)</Text>
+            <Text style={[styles.entityField, { color: '#1a1a1a' }]}>• content</Text>
+            <Text style={[styles.entityField, { color: '#1a1a1a' }]}>• project_id (FK)</Text>
+            <Text style={[styles.entityField, { color: '#1a1a1a' }]}>• generated_at</Text>
+          </View>
+
+          {/* ChatMessage Entity */}
+          <View style={[styles.entityBox, { backgroundColor: '#dc3545' }]}>
+            <Text style={styles.entityTitle}>ChatMessage</Text>
+            <Text style={styles.entityField}>• id (PK)</Text>
+            <Text style={styles.entityField}>• content</Text>
+            <Text style={styles.entityField}>• user_id (FK)</Text>
+            <Text style={styles.entityField}>• project_id (FK)</Text>
+            <Text style={styles.entityField}>• timestamp</Text>
+          </View>
         </View>
+        
+        <Text style={styles.mockNote}>
+          📊 Diagrama ER interactivo{'\n'}
+          � Usa los controles de zoom para navegar{'\n'}
+          🔄 Toca "Reset" para volver al inicio{'\n'}
+          📋 Muestra las entidades principales del sistema
+        </Text>
       </View>
     );
   };
@@ -298,6 +335,41 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
     marginBottom: 16,
     textAlign: 'center',
+  },
+  diagramContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  entityBox: {
+    width: 140,
+    padding: 12,
+    borderRadius: 8,
+    margin: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  entityTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 8,
+    textAlign: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.3)',
+    paddingBottom: 4,
+  },
+  entityField: {
+    fontSize: 10,
+    color: '#ffffff',
+    marginBottom: 2,
   },
   mockERD: {
     flex: 1,

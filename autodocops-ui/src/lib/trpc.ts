@@ -1,5 +1,5 @@
 import { createTRPCReact } from '@trpc/react-query';
-// import { httpBatchLink } from '@trpc/client';
+import { httpBatchLink } from '@trpc/client';
 // import { useSession } from '../stores/useSession';
 
 // Types
@@ -45,25 +45,58 @@ export interface ChatResponse {
   timestamp: string;
 }
 
-// Create tRPC React hooks with any type for now
-export const trpc = createTRPCReact<any>();
+// Define AppRouter type interface (this would come from your backend)
+interface AppRouter {
+  // This would be defined by your tRPC backend
+  project: {
+    list: {
+      input: void;
+      output: Project[];
+    };
+    create: {
+      input: CreateProjectInput;
+      output: Project;
+    };
+    byId: {
+      input: { id: string };
+      output: Project | null;
+    };
+  };
+  auth: {
+    login: {
+      input: LoginInput;
+      output: AuthResponse;
+    };
+  };
+  chat: {
+    sendMessage: {
+      input: ChatMessage;
+      output: ChatResponse;
+    };
+  };
+}
 
-// tRPC client configuration (commented out for now)
-/*
+// Create tRPC React hooks with proper typing
+export const trpc = createTRPCReact<AppRouter>();
+
+// tRPC client configuration
 export const createTRPCClient = () => {
+  const apiUrl = 'http://localhost:3000/trpc'; // Default to localhost for development
+    
   return trpc.createClient({
     links: [
       httpBatchLink({
-        url: 'https://api.autodocops.com/trpc', // This would be your actual API URL
+        url: apiUrl,
         headers: () => {
-          const { token } = useSession.getState();
-          return {
-            authorization: token ? `Bearer ${token}` : '',
-          };
+          // For now, return empty headers. In production, add auth token
+          return {};
+          // const { token } = useSession.getState();
+          // return {
+          //   authorization: token ? `Bearer ${token}` : '',
+          // };
         },
       }),
     ],
   });
 };
-*/
 

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
 interface User {
@@ -26,20 +27,35 @@ const secureStorage = {
     if (Platform.OS === 'web') {
       return localStorage.getItem(name);
     }
-    return await SecureStore.getItemAsync(name);
+    try {
+      return await SecureStore.getItemAsync(name);
+    } catch {
+      // Fallback to AsyncStorage if SecureStore fails
+      return await AsyncStorage.getItem(name);
+    }
   },
   setItem: async (name: string, value: string): Promise<void> => {
     if (Platform.OS === 'web') {
       localStorage.setItem(name, value);
     } else {
-      await SecureStore.setItemAsync(name, value);
+      try {
+        await SecureStore.setItemAsync(name, value);
+      } catch {
+        // Fallback to AsyncStorage if SecureStore fails
+        await AsyncStorage.setItem(name, value);
+      }
     }
   },
   removeItem: async (name: string): Promise<void> => {
     if (Platform.OS === 'web') {
       localStorage.removeItem(name);
     } else {
-      await SecureStore.deleteItemAsync(name);
+      try {
+        await SecureStore.deleteItemAsync(name);
+      } catch {
+        // Fallback to AsyncStorage if SecureStore fails
+        await AsyncStorage.removeItem(name);
+      }
     }
   },
 };

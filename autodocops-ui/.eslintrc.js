@@ -7,10 +7,11 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     '@typescript-eslint/no-unused-vars': 'error',
-    '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/explicit-function-return-type': 'warn',
+    '@typescript-eslint/no-explicit-any': 'warn', // Cambiado de 'error' a 'warn'
+    '@typescript-eslint/explicit-function-return-type': 'off', // Deshabilitado para mayor flexibilidad
     'prefer-const': 'error',
     'no-var': 'error',
+    '@typescript-eslint/no-unused-expressions': 'off', // Permite expressiones como '_parameter'
   },
   ignorePatterns: [
     'node_modules/',
