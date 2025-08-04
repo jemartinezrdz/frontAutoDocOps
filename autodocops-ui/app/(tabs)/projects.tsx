@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, Animated } from 'react-native';
 
 interface Project {
   name: string;
@@ -8,11 +8,37 @@ interface Project {
 
 // Skeleton shimmer component
 function ProjectSkeleton() {
+  const shimmerValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const shimmerAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(shimmerValue, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shimmerValue, {
+          toValue: 0,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    shimmerAnimation.start();
+    return () => shimmerAnimation.stop();
+  }, [shimmerValue]);
+
+  const shimmerOpacity = shimmerValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.3, 0.7],
+  });
+
   return (
     <View style={styles.skeletonCard}>
-      <View style={styles.skeletonTitle} />
-      <View style={styles.skeletonText} />
-      <View style={styles.skeletonTextShort} />
+      <Animated.View style={[styles.skeletonTitle, { opacity: shimmerOpacity }]} />
+      <Animated.View style={[styles.skeletonText, { opacity: shimmerOpacity }]} />
+      <Animated.View style={[styles.skeletonTextShort, { opacity: shimmerOpacity }]} />
     </View>
   );
 }

@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Switch } from 'react-native';
+import { useUI } from '../../src/stores/useUI';
 
 export default function SettingsScreen() {
-  const [darkMode, setDarkMode] = useState(false);
-  const [notifications, setNotifications] = useState(true);
+  const { theme, notifications, setTheme, setNotifications } = useUI();
+  
+  const isDarkMode = theme === 'dark';
+
+  const handleThemeChange = (value: boolean): void => {
+    setTheme(value ? 'dark' : 'light');
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -24,10 +30,10 @@ export default function SettingsScreen() {
               </Text>
             </View>
             <Switch
-              value={darkMode}
-              onValueChange={setDarkMode}
+              value={isDarkMode}
+              onValueChange={handleThemeChange}
               trackColor={{ false: '#e9ecef', true: '#007AFF' }}
-              thumbColor={darkMode ? '#ffffff' : '#ffffff'}
+              thumbColor={isDarkMode ? '#ffffff' : '#ffffff'}
             />
           </View>
         </View>
