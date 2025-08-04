@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useAccessibility, useScreenReaderAnnouncement, getAccessibilityProps } from '../hooks/useAccessibility';
 
 interface ChatMessage {
   id: string;
@@ -36,6 +37,10 @@ export function ChatComponent({ projectId: _projectId, onSendMessage }: ChatComp
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+  
+  // Accessibility hooks
+  const { isScreenReaderEnabled, isReduceMotionEnabled } = useAccessibility();
+  const { announce } = useScreenReaderAnnouncement();
 
   const scrollToBottom = () => {
     scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -45,7 +50,25 @@ export function ChatComponent({ projectId: _projectId, onSendMessage }: ChatComp
     scrollToBottom();
   }, [messages]);
 
-  const simulateTypingEffect = (text: string, messageId: string) => {
+  const simulateTypingEffect = useCallback((text: string, messageId: string) => {
+    // Skip typing animation if reduce motion is enabled
+    if (isReduceMotionEnabled) {
+      setMessages(prev => 
+        prev.map(msg => 
+          msg.id === messageId 
+            ? { ...msg, content: text, isTyping: false }
+            : msg
+        )
+      );
+      setIsLoading(false);
+      
+      // Announce the complete message for screen readers
+      if (isScreenReaderEnabled) {
+        announce(`Respuesta del asistente: ${text}`);
+      }
+      return;
+    }
+
     let currentText = '';
     let index = 0;
     
@@ -70,9 +93,14 @@ export function ChatComponent({ projectId: _projectId, onSendMessage }: ChatComp
         );
         clearInterval(typingInterval);
         setIsLoading(false);
+        
+        // Announce the complete message for screen readers
+        if (isScreenReaderEnabled) {
+          announce(`Respuesta del asistente: ${text}`);
+        }
       }
     }, 30); // Typing speed
-  };
+  }, [isReduceMotionEnabled, isScreenReaderEnabled, announce]);
 
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
@@ -131,6 +159,11 @@ export function ChatComponent({ projectId: _projectId, onSendMessage }: ChatComp
         styles.messageContainer,
         message.isUser ? styles.userMessage : styles.botMessage,
       ]}
+      {...getAccessibilityProps(
+        `${message.isUser ? 'Tu mensaje' : 'Mensaje del asistente'}: ${message.content}`,
+        `Enviado a las ${message.timestamp.toLocaleTimeString()}`,
+        'text'
+      )}
     >
       <View
         style={[
@@ -187,6 +220,11 @@ export function ChatComponent({ projectId: _projectId, onSendMessage }: ChatComp
           multiline
           maxLength={500}
           editable={!isLoading}
+          {...getAccessibilityProps(
+            'Campo de texto para escribir tu pregunta',
+            'Escribe tu pregunta sobre la API y presiona enviar',
+            'none'
+          )}
         />
         <TouchableOpacity
           style={[
@@ -195,6 +233,12 @@ export function ChatComponent({ projectId: _projectId, onSendMessage }: ChatComp
           ]}
           onPress={handleSendMessage}
           disabled={!inputText.trim() || isLoading}
+          {...getAccessibilityProps(
+            'Enviar mensaje',
+            inputText.trim() ? 'Envía tu pregunta al asistente' : 'Escribe un mensaje antes de enviar',
+            'button',
+            { disabled: !inputText.trim() || isLoading }
+          )}
         >
           <Ionicons 
             name="send" 
