@@ -55,14 +55,16 @@ export const useSession = create<SessionState>()(
       login: async (email: string, _password: string): Promise<void> => {
         set({ isLoading: true });
         try {
-          // TODO: Implement actual login API call
+          // TODO: Replace with actual tRPC call
+          // const result = await trpc.auth.login.mutate({ email, password });
+          
           // Simulated login for now
           const mockUser: User = {
             id: '1',
             email,
             name: 'Usuario Demo',
           };
-          const mockToken = 'mock-jwt-token';
+          const mockToken = `jwt.${btoa(JSON.stringify({ userId: '1', email, exp: Date.now() + 86400000 }))}.signature`;
           
           set({
             user: mockUser,

@@ -20,15 +20,19 @@
     "@tamagui/core": "^1.132.15",
     "@tamagui/font-inter": "^1.132.15",
     "@tamagui/theme-base": "^1.132.15",
+    "@tanstack/react-query": "^5.84.1",
+    "@trpc/client": "^11.4.3",
+    "@trpc/react-query": "^11.4.3",
     "expo": "~53.0.20",
     "expo-router": "~5.1.4",
+    "expo-secure-store": "~14.2.3",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "react-error-boundary": "^6.0.0",
     "react-native": "0.79.5",
     "react-native-web": "^0.20.0",
-    "zustand": "^5.0.7",
-    "expo-secure-store": "~14.2.3"
+    "zustand": "^5.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

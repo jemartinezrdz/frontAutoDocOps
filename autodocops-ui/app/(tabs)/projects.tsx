@@ -1,10 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Animated } from 'react-native';
-
-interface Project {
-  name: string;
-  description: string;
-}
+import { Project } from '../../src/lib/trpc';
 
 // Skeleton shimmer component
 function ProjectSkeleton() {
@@ -44,16 +40,48 @@ function ProjectSkeleton() {
 }
 
 export default function ProjectsScreen() {
-  const [loading, setLoading] = useState(true);
-  const [projects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    
-    return () => clearTimeout(timer);
+    // Simulate API call
+    const loadProjects = async () => {
+      try {
+        setIsLoading(true);
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Mock data
+        const mockProjects: Project[] = [
+          {
+            id: '1',
+            name: 'AutoDocOps API',
+            description: 'API principal para generación automática de documentación',
+            repositoryUrl: 'https://github.com/autodocops/api',
+            createdAt: '2024-01-15T10:00:00Z',
+            updatedAt: '2024-01-20T15:30:00Z',
+          },
+          {
+            id: '2',
+            name: 'Frontend Dashboard',
+            description: 'Dashboard web para gestión de proyectos y documentación',
+            repositoryUrl: 'https://github.com/autodocops/dashboard',
+            createdAt: '2024-01-10T09:00:00Z',
+            updatedAt: '2024-01-18T14:20:00Z',
+          },
+        ];
+        
+        setProjects(mockProjects);
+        setError(null);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadProjects();
   }, []);
 
   return (
@@ -64,13 +92,20 @@ export default function ProjectsScreen() {
       </View>
       
       <View style={styles.content}>
-        {loading ? (
+        {error ? (
+          <View style={styles.errorState}>
+            <Text style={styles.errorTitle}>Error al cargar proyectos</Text>
+            <Text style={styles.errorText}>
+              No se pudieron cargar los proyectos. Verifica tu conexión e intenta nuevamente.
+            </Text>
+          </View>
+        ) : isLoading ? (
           <>
             <ProjectSkeleton />
             <ProjectSkeleton />
             <ProjectSkeleton />
           </>
-        ) : projects.length === 0 ? (
+        ) : !projects || projects.length === 0 ? (
           <View style={styles.emptyState}>
             <Text style={styles.emptyTitle}>No hay proyectos</Text>
             <Text style={styles.emptyText}>
@@ -153,6 +188,25 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   emptyText: {
+    fontSize: 16,
+    color: '#666666',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  errorState: {
+    alignItems: 'center',
+    padding: 40,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    marginTop: 40,
+  },
+  errorTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#dc3545',
+    marginBottom: 12,
+  },
+  errorText: {
     fontSize: 16,
     color: '#666666',
     textAlign: 'center',
