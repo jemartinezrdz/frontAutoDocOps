@@ -94,7 +94,8 @@ export const ERDViewer: React.FC<ERDViewerProps> = ({
         setRelationships(mockRelationships);
         setLoading(false);
       }, 1500);
-    } catch (_err) {
+    } catch (error) {
+      console.error('Error loading ERD data:', error);
       setError('Error loading ERD data');
       setLoading(false);
       Alert.alert('Error', 'Failed to load ERD data');
