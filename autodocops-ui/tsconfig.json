@@ -11,6 +11,7 @@
     "lib": ["ES2015", "ES2017", "ES2018", "DOM"],
     "target": "ES2015",
     "jsx": "react-jsx",
+    // Requires TypeScript 5.0+ and a modern bundler.
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true

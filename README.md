@@ -80,6 +80,8 @@ npm run lint
 npm run format
 ```
 
+> **Nota:** Esta configuración utiliza `moduleResolution: bundler`, por lo que se requiere TypeScript 5.0 o superior y un empaquetador moderno (por ejemplo, Metro, Vite o Webpack 5).
+
 ## Estructura del Proyecto
 
 ```
