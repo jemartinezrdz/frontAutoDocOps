@@ -1,5 +1,6 @@
 import { createTRPCReact } from '@trpc/react-query';
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
+import type { AnyRouter } from '@trpc/server';
 import { useSession } from '../stores/useSession';
 
 // Types
@@ -47,8 +48,8 @@ export interface ChatResponse {
 
 // Define AppRouter type interface (this would come from your backend)
 // In a real application, this would be imported from your tRPC backend
-// Using 'any' temporarily until the backend router is properly implemented
-export type AppRouter = any;
+// Using AnyRouter as placeholder until the backend router is properly implemented
+export type AppRouter = AnyRouter;
 
 // Create tRPC React hooks with proper typing
 export const trpc = createTRPCReact<AppRouter>();
