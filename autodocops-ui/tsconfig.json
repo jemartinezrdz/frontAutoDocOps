@@ -8,6 +8,8 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "exactOptionalPropertyTypes": false,
+    "lib": ["DOM", "ES2017", "ES2018", "ESNext"], // Explicitly include ES2017/ES2018 features
+    "target": "ES2017", // More appropriate target for React Native/Expo
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
   }
