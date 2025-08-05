@@ -1,0 +1,57 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [ main, develop, test ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: autodocops-ui/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd autodocops-ui
+        npm ci
+    
+    - name: Type check
+      run: |
+        cd autodocops-ui
+        npm run type-check
+    
+    - name: Lint
+      run: |
+        cd autodocops-ui
+        npm run lint
+    
+    - name: Format check
+      run: |
+        cd autodocops-ui
+        npm run format:check
+    
+    - name: Build for web
+      run: |
+        cd autodocops-ui
+        npx expo export --platform web
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: web-build-${{ matrix.node-version }}
+        path: autodocops-ui/dist/
+
