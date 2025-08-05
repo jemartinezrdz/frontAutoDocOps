@@ -125,6 +125,8 @@ autodocops-ui/
 
 ## Configuración de Desarrollo
 
+Este proyecto requiere **TypeScript 5.0+** y un bundler moderno compatible con `moduleResolution: "bundler"`.
+
 ### Variables de Entorno
 
 Crear archivo `.env` basado en `.env.example`:
