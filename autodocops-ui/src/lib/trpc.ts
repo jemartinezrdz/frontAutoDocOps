@@ -1,5 +1,6 @@
 import { createTRPCReact } from '@trpc/react-query';
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
+import Constants from 'expo-constants';
 import { useSession } from '../stores/useSession';
 
 // Types
@@ -55,8 +56,11 @@ export const trpc = createTRPCReact<AppRouter>();
 
 // tRPC client configuration
 export const createClient = () => {
-  const apiUrl = 'http://localhost:3000/trpc'; // Default to localhost for development
-    
+  const apiUrl =
+    process.env.EXPO_PUBLIC_API_URL ??
+    Constants.expoConfig?.extra?.apiUrl ??
+    'http://localhost:3000/trpc';
+
   return createTRPCClient({
     links: [
       httpBatchLink({
