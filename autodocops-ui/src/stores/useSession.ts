@@ -74,13 +74,14 @@ export const useSession = create<SessionState>()(
           // TODO: Replace with actual tRPC call
           // const result = await trpc.auth.login.mutate({ email, password });
           
-          // Simulated login for now
+          // Simulated login for development - NOT FOR PRODUCTION
           const mockUser: User = {
             id: '1',
             email,
             name: 'Usuario Demo',
           };
-          const mockToken = `jwt.${btoa(JSON.stringify({ userId: '1', email, exp: Date.now() + 86400000 }))}.signature`;
+          // Generate a secure random mock token (doesn't encode user data)
+          const mockToken = `mock-token-${Math.random().toString(36).substring(2, 18)}-${Date.now()}`;
           
           set({
             user: mockUser,
